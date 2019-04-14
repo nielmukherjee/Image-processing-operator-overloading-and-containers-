@@ -10,8 +10,8 @@
 #include <cmath>
 #include <string>
 #include <sstream>
-#define CATCH_CONFIG_MAIN
-#include "catch.hpp"
+#include <fstream>
+#include <iostream>
 #include <vector>
 #include <algorithm>
 #include <memory>
@@ -25,7 +25,7 @@ private:
 public:
     Image(); //default constructor
     ~Image(); //default destructor
-    Image(int width, int height); //Parametirized constructor
+    Image(int width, int height,std::unique_ptr<unsigned char[]> data); //Parametirized constructor
     Image(Image& image); //Copy constructor
     Image(Image&& other); //Move constructor
     Image& operator=(Image& other); //Assignment operator
@@ -33,6 +33,7 @@ public:
     //Accessors
     int getWidth() const;
     int getHeight() const;
+    std::unique_ptr<unsigned char[]>& getData();
     //Mutators
     void setWidth(int width);
     void setHeight(int height);
@@ -42,8 +43,12 @@ public:
     Image operator!();
     Image operator/(Image& L1);
     Image operator*(int i);
+    friend void operator >>(std::ifstream& stream, Image& other);
+    friend void operator <<(std::ofstream& stream, Image& other);
+    //other methods
+    void copy(const Image& other);
     //load and save images
-    void load(std::string inputFileName);
+    Image load(std::string inputFileName);
     void save(std::string outputFileName);
 
     //start class iterator and make image the friend
@@ -87,23 +92,25 @@ public:
         }
         bool operator!=(const iterator& rhs)
         {
+            //std::cout<<"operator != called"<<std::endl;
             if (this->ptr != rhs.ptr) {
+               // std::cout<<"operator != found true"<<std::endl;
                 return true;
             }
 
             else {
+               // std::cout<<"operator != found false"<<std::endl;
                 return false;
             }
+            //std::cout<<"operator != done"<<std::endl;
         }
     };
     // define begin()/end() to get iterator to start and
-    iterator begin(void)
-    {
+    iterator begin(void) const {
         return iterator(data.get());
     }
-    iterator end(void)
-    {
-        return iterator(data.get() + (width * height));
+    iterator end(void) const {
+        return data.get()+((height)*(width));
     }
 };
 }
