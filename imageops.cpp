@@ -22,6 +22,7 @@ Image::~Image()
     this->width = -1;
     this->height = -1;
     data.reset(nullptr);
+    cout<<"destructor done"<<endl;
 }
 //parametrized constructor
 Image::Image(int width, int height,unique_ptr<unsigned char[]> data_in)
@@ -216,7 +217,7 @@ void operator >>(ifstream& stream, Image& other){
 * binary_data_block
 */
 void operator <<(ofstream& stream, Image& other){
-     cout<<"start writing to out file"<<endl;
+    cout<<"start writing to out file"<<endl;
     int size = other.width*other.height;
     stream<<"P5"<<endl;
     stream<<other.height<<" "<<other.width<<endl;
@@ -236,13 +237,19 @@ void Image::copy(const Image& other) {
 Image Image::load(std::string inputFileName) {
     ifstream file_stream(inputFileName, ios::in | ios::binary);
     Image imageFile(0,0,std::move(nullptr));
+   
     file_stream>>imageFile;
     cout<<"image loaded successfully"<<endl;
+    cout<<"image data :"<<endl;
+    std::cout<<imageFile.data.get()<<endl;
+    cout<<"image data :"<<endl;
     return imageFile;
 }
 void Image::save(std::string outputFileName) {
     ofstream outstream(outputFileName, ios::out | ios::binary | ios::app);
-    outstream<<(*this);
+    Image imageFile(width,height,move(data));
+    outstream<<imageFile;
+    std::cout<<imageFile.data.get()<<endl;
     cout<<"image saved successfully"<<endl;
 }
 }

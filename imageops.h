@@ -56,13 +56,15 @@ public:
     private:
         unsigned char* ptr;
         // construct only via Image class (begin/end)
-        friend class Image;
+       
         iterator(u_char* p)
             : ptr(p)
         {
         }
 
-    public: //copy construct is public
+    public: 
+         friend class Image;
+        //copy construct is public friend class Image;
         iterator(const iterator& rhs)
             : ptr(rhs.ptr)
         {

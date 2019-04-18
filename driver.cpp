@@ -51,7 +51,34 @@ int main(int argc,char* argv[]){
         cout<<"start maskin operations"<<endl;
         ANGDAN002::Image result = image1/image2;
         cout<<"Done masking"<<endl;
-        result.save(output); 
+        result.save(output);
     }
+    if(operation=="-a"){
+        ANGDAN002::Image image;
+        ANGDAN002::Image image1 =  image.load(l1);
+        ANGDAN002::Image image2 =  image.load(l2);
+        cout<<"start adding operations"<<endl;
+        ANGDAN002::Image result = image1+image2;
+        cout<<"Done adding"<<endl;
+        result.save(output);
+    }
+    if(operation=="-s"){
+        ANGDAN002::Image image;
+        ANGDAN002::Image image1 =  image.load(l1);
+        ANGDAN002::Image image2 =  image.load(l2);
+        cout<<"start sub operations"<<endl;
+        ANGDAN002::Image result = image1-image2;
+        cout<<"Done subtracting"<<endl;
+        result.save(output);
+    }
+    
+    // if(operation=="-t"){   
+    //     ANGDAN002::Image image;
+    //     ANGDAN002::Image image1 =  image.load(l1);
+    //     cout<<"start threshold operations"<<endl;
+    //     ANGDAN002::Image result = image1*f;
+    //     cout<<"threshold operation Done"<<endl;
+    //     result.save(output); 
+    // }
     return 0;
 }
