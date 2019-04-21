@@ -56,8 +56,8 @@ int main(int argc,char* argv[]){
     }
     if(operation=="-a"){
         ANGDAN002::Image image(0,0,std::move(nullptr));
-        ANGDAN002::Image image2 =  image.load(l2);
         ANGDAN002::Image image1 =  image.load(l1);
+        ANGDAN002::Image image2 =  image.load(l2);
         cout<<"start adding operations"<<endl;
         ANGDAN002::Image result = image1+image2;
         cout<<"Done adding"<<endl;

@@ -132,7 +132,7 @@ Image& Image::operator+(Image& other)
     Image::iterator inStart = other.begin(), inEnd = other.end();
     while (beg != end) {
         *beg = *inStart + *beg;
-        if(*beg>255){*beg=255;}
+        if(*beg > 255){*beg=255;}
         ++beg;
         ++inStart;
     }
@@ -147,7 +147,7 @@ Image& Image::operator-(Image& other)
     Image::iterator beg = this->begin(), end = this->end();
     Image::iterator inStart = other.begin(), inEnd = other.end();
     while (beg != end) {
-        *beg = *inStart - *beg;
+        *beg = *beg - *inStart;
         if(*beg<0){*beg=0;}
         ++beg;
         ++inStart;
