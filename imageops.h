@@ -38,11 +38,11 @@ public:
     void setWidth(int width);
     void setHeight(int height);
     //overloaded operators
-    Image operator+(Image& other);
-    Image operator-(Image& other);
-    Image operator!();
-    Image operator/(Image& L1);
-    Image operator*(int i);
+    Image& operator+(Image& other);
+    Image& operator-(Image& other);
+    Image& operator!();
+    Image& operator/(Image& L1);
+    Image& operator*(int i);
     friend void operator >>(std::ifstream& stream, Image& other);
     friend void operator <<(std::ofstream& stream, Image& other);
     //other methods

@@ -18,6 +18,7 @@ int main(int argc,char* argv[]){
       string output;
       string l1;
       string l2;
+      int f = 80;
     if (argc < 4 || argc > 5) {
       exit(EXIT_FAILURE);
     }
@@ -37,48 +38,48 @@ int main(int argc,char* argv[]){
     }
 
     if(operation=="-i"){   
-        ANGDAN002::Image image;
+        ANGDAN002::Image image(0,0,std::move(nullptr));
         ANGDAN002::Image image1 =  image.load(l1);
         cout<<"start Noting operations"<<endl;
-        ANGDAN002::Image result = !image1;
+        !image1;
         cout<<"noted"<<endl;
-        result.save(output); 
+        image1.save(output); 
     }
     if(operation=="-l"){
-        ANGDAN002::Image image;
+        ANGDAN002::Image image(0,0,std::move(nullptr));
         ANGDAN002::Image image1 =  image.load(l1);
         ANGDAN002::Image image2 =  image.load(l2);
         cout<<"start maskin operations"<<endl;
-        ANGDAN002::Image result = image1/image2;
+        image1/image2;
         cout<<"Done masking"<<endl;
-        result.save(output);
+        image1.save(output);
     }
     if(operation=="-a"){
-        ANGDAN002::Image image;
+        ANGDAN002::Image image(0,0,std::move(nullptr));
         ANGDAN002::Image image1 =  image.load(l1);
         ANGDAN002::Image image2 =  image.load(l2);
         cout<<"start adding operations"<<endl;
-        ANGDAN002::Image result = image1+image2;
+        image1+image2;
         cout<<"Done adding"<<endl;
-        result.save(output);
+        image1.save(output);
     }
     if(operation=="-s"){
-        ANGDAN002::Image image;
+        ANGDAN002::Image image(0,0,std::move(nullptr));
         ANGDAN002::Image image1 =  image.load(l1);
         ANGDAN002::Image image2 =  image.load(l2);
         cout<<"start sub operations"<<endl;
-        ANGDAN002::Image result = image1-image2;
+        image1-image2;
         cout<<"Done subtracting"<<endl;
-        result.save(output);
+        image1.save(output);
     }
     
-    // if(operation=="-t"){   
-    //     ANGDAN002::Image image;
-    //     ANGDAN002::Image image1 =  image.load(l1);
-    //     cout<<"start threshold operations"<<endl;
-    //     ANGDAN002::Image result = image1*f;
-    //     cout<<"threshold operation Done"<<endl;
-    //     result.save(output); 
-    // }
+    if(operation=="-t"){   
+        ANGDAN002::Image image(0,0,std::move(nullptr));
+        ANGDAN002::Image image1 =  image.load(l1);
+        cout<<"start threshold operations"<<endl;
+        image1*f;
+        cout<<"threshold operation Done"<<endl;
+        image1.save(output); 
+    }
     return 0;
 }

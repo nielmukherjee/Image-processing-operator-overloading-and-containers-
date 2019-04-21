@@ -113,7 +113,7 @@ void Image::setHeight(int height)
     this->height = height;
 }
 //overloaded operators
-Image Image::operator+(Image& other){
+Image& Image::operator+(Image& other){
     Image::iterator beg = this->begin(), end = this->end();
     Image::iterator inStart = other.begin(), inEnd = other.end();
     while ( beg != end) {
@@ -121,8 +121,9 @@ Image Image::operator+(Image& other){
         ++beg; 
         ++inStart; 
     }
+    return (*this);
 }
-Image Image::operator-(Image& other){
+Image& Image::operator-(Image& other){
     Image::iterator beg = this->begin(), end = this->end();
     Image::iterator inStart = other.begin(), inEnd = other.end();
     while ( beg != end) {
@@ -130,17 +131,20 @@ Image Image::operator-(Image& other){
         ++beg; 
         ++inStart; 
     }
+    return (*this);
 }
-Image Image::operator!(){
+Image& Image::operator!(){
+    //std::cout<<data.get()<<endl;
     Image::iterator beg = this->begin(), end = this->end();
-    cout<<"line one okay"<<endl;
-    cout<<"line one okay"<<*end<<endl;
     while ( beg != end) { 
-        //cout<<"loop okay"<<endl;
         *beg = 255-*beg; ++beg; 
     }
+    return (*this);
+   //std::cout<<endl<<endl<<endl<<endl<<endl;
+   //std::cout<<"Data after noting"<<endl;
+   //std::cout<<data.get()<<endl;
 }
-Image Image::operator/(Image& other){
+Image& Image::operator/(Image& other){
     Image::iterator beg = this->begin(), end = this->end();
     Image::iterator inStart = other.begin(), inEnd = other.end();
     while ( beg != end) {
@@ -153,8 +157,9 @@ Image Image::operator/(Image& other){
         ++beg; 
         ++inStart; 
     }
+    return (*this);
 }
-Image Image::operator*(int f){
+Image& Image::operator*(int f){
     Image::iterator beg = this->begin(), end = this->end();
     while ( beg != end) { 
         if(*beg >f ){
@@ -165,6 +170,7 @@ Image Image::operator*(int f){
         }
        ++beg; 
     }
+    return (*this);
 }
 /*
 * #Data Format of the file
@@ -211,8 +217,8 @@ void operator >>(ifstream& stream, Image& other){
                     //cout<<"Successfully created an instance of class image"<<endl;
                     stream.close();
                     other = imagee; //invokes copy assignment
-                    std::cout<<"other copied data :"<<endl;
-                    std::cout<<other.data.get()<<endl;
+                    //std::cout<<"other copied data :"<<endl;
+                    //std::cout<<other.data.get()<<endl;
                     cout<<"input stream Successfully done"<<endl; 
                 }   
             }
@@ -231,11 +237,16 @@ void operator >>(ifstream& stream, Image& other){
 */
 void operator <<(ofstream& stream, Image& other){
     cout<<"start writing to out file"<<endl;
-    int size = other.width*other.height;
+    //cout<<"width: "<<other.width<<" height: "<<other.height<<endl;
+    //cout<<"P5"<<endl<<"255"<<endl;
+    //std::cout<<"other copied data :"<<endl;
+    //std::cout<<other.data.get()<<endl;
+    // int size = other.width*other.height;
     stream<<"P5"<<endl;
+    stream<<"#Dancan"<<endl;
     stream<<other.height<<" "<<other.width<<endl;
-    stream<<"255"<<endl;
-    stream.write((char*)other.data.get(),size);
+    stream<<255<<endl;
+    stream.write((char*)other.data.get(),(other.width*other.height));
     stream.close();
     cout<<"out file closed"<<endl;
 }
@@ -257,6 +268,9 @@ Image Image::load(std::string inputFileName) {
     return imageFile;
 }
 void Image::save(std::string outputFileName) {
+   
+    std::cout<<"Data to be saved :"<<endl;
+    std::cout<<data.get()<<endl;
     ofstream outstream(outputFileName, ios::out | ios::binary | ios::app);
     outstream<<(*this);
     //Image imageFile(width,height,move(data));
