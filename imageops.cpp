@@ -11,31 +11,33 @@ namespace ANGDAN002 {
 
 //default constructor
 Image::Image()
-{
-    this->width = 0;
-    this->height = 0;
-}
+: width(width)
+, height(height)
+, data(nullptr)
+{}
 //default destructor
 Image::~Image()
 {
     cout<<"destructor invoked"<<endl;
-    this->width = -1;
-    this->height = -1;
-    data.reset(nullptr);
-    cout<<"destructor done"<<endl;
+    // this->width = 0;
+    // this->height = 0;
+    // cout<<"destructor done 1"<<endl;
+    // this->data = nullptr;
+    // cout<<"destructor done 2"<<endl;
 }
 //parametrized constructor
 Image::Image(int width, int height,unique_ptr<unsigned char[]> data_in)
     : width(width)
     , height(height)
-    ,data(move(data_in)){};
+    ,data(move(data_in))
+    {}
 //copy constructor
 Image::Image(Image& other)
 {
     cout<<"copy constructor called"<<endl;
     this->width = other.width;
     this->height = other.height;
-    this->data.reset(new unsigned char[width * height]);
+    //this->data.reset(new unsigned char[width * height]);
     Image::iterator beg = this->begin(), end = this->end();
     Image::iterator inStart = other.begin(), inEnd = other.end();
     while ( beg != end) { *beg = *inStart; ++beg; ++inStart; }
@@ -49,6 +51,11 @@ Image::Image(Image&& other)
     cout<<"move constructor called"<<endl;
     this->data.reset(new unsigned char[width * height]);
     this->data = move(other.data);
+
+    other.width=0;
+    other.height=0;
+    other.data.reset(nullptr);
+
     cout<<"move constructor called"<<endl;
 }
 //copy assignment operator
@@ -72,13 +79,13 @@ Image& Image::operator=(Image&& other)
 {
     if (this != &other) {
         cout<<"move constructor called"<<endl;
-        delete [] data.get();
+        //delete [] data.get();
         this->width = other.width;
         this->height = other.height;
         this->data.reset(new unsigned char[width * height]);
-        this->data = std::move(other.data);
-        other.width = -1;
-        other.height = -1;
+        this->data = move(other.data);
+        other.width = 0;
+        other.height = 0;
         other.data.reset(nullptr);
         cout<<"move constructor done"<<endl;
     }
@@ -179,6 +186,7 @@ void operator >>(ifstream& stream, Image& other){
         int height, width;
         int size ;
         bool start = false;
+        int check;
         while(getline(stream,line)){
             
             if(line != "P5" && line != "255" && line.at(0) != '#'){
@@ -187,20 +195,23 @@ void operator >>(ifstream& stream, Image& other){
                     ss >> height;
                     ss >> width;
                     cout<<height<<" is "<<width<<endl;
+                    cout<<"check"<<" is "<<check<<endl;
                     size = height*width;
                     start = true;
                     cout<<"File size is: "<<size<<endl;
                 }
                 else if (start==true){
                     cout<<"Start reading file data: "<<endl;
-                    unique_ptr<unsigned char[]> data(new unsigned char[size]);
-                    ss.read((char *)data.get(),size);
+                    unique_ptr<unsigned char[]> buffer(new unsigned char[size]);
+                    ss.read((char *)buffer.get(),size);
                     cout<<"Successfully read "<<endl;
-                    Image imagee(width,height,move(data));
+                    Image imagee(width,height,move(buffer));
+                    cout<<"imagee data :"<<endl;
+                    std::cout<<imagee.data.get()<<endl;
                     cout<<"Successfully created an instance of class image"<<endl;
                     stream.close();
                     other = imagee; //invokes copy assignment
-                    cout<<"Successfully done"<<endl; 
+                    cout<<"input stream Successfully done"<<endl; 
                 }   
             }
             
@@ -237,19 +248,18 @@ void Image::copy(const Image& other) {
 Image Image::load(std::string inputFileName) {
     ifstream file_stream(inputFileName, ios::in | ios::binary);
     Image imageFile(0,0,std::move(nullptr));
-   
     file_stream>>imageFile;
     cout<<"image loaded successfully"<<endl;
-    cout<<"image data :"<<endl;
-    std::cout<<imageFile.data.get()<<endl;
-    cout<<"image data :"<<endl;
+    //cout<<"image data :"<<endl;
+    //std::cout<<imageFile.data.get()<<endl;
     return imageFile;
 }
 void Image::save(std::string outputFileName) {
     ofstream outstream(outputFileName, ios::out | ios::binary | ios::app);
-    Image imageFile(width,height,move(data));
-    outstream<<imageFile;
-    std::cout<<imageFile.data.get()<<endl;
+    outstream<<(*this);
+    //Image imageFile(width,height,move(data));
+   // outstream<<imageFile;
+    //std::cout<<imageFile.data.get()<<endl;
     cout<<"image saved successfully"<<endl;
 }
 }

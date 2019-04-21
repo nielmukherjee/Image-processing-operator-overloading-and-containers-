@@ -112,7 +112,7 @@ public:
         return iterator(data.get());
     }
     iterator end(void) const {
-        return data.get()+((height)*(width));
+        return (data.get()+((height)*(width)));
     }
 };
 }
