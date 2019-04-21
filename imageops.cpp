@@ -206,11 +206,13 @@ void operator >>(ifstream& stream, Image& other){
                     ss.read((char *)buffer.get(),size);
                     cout<<"Successfully read "<<endl;
                     Image imagee(width,height,move(buffer));
-                    cout<<"imagee data :"<<endl;
-                    std::cout<<imagee.data.get()<<endl;
-                    cout<<"Successfully created an instance of class image"<<endl;
+                    //cout<<"imagee data :"<<endl;
+                    //std::cout<<imagee.data.get()<<endl;
+                    //cout<<"Successfully created an instance of class image"<<endl;
                     stream.close();
                     other = imagee; //invokes copy assignment
+                    std::cout<<"other copied data :"<<endl;
+                    std::cout<<other.data.get()<<endl;
                     cout<<"input stream Successfully done"<<endl; 
                 }   
             }
