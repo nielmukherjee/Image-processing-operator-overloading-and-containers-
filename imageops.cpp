@@ -39,7 +39,7 @@ Image::Image(Image& other)
     cout << "copy constructor called" << endl;
     this->width = other.width;
     this->height = other.height;
-    //this->data.reset(new unsigned char[width * height]);
+    this->data.reset(new unsigned char[width * height]);
     Image::iterator beg = this->begin(), end = this->end();
     Image::iterator inStart = other.begin(), inEnd = other.end();
     while (beg != end) {
@@ -126,7 +126,8 @@ void Image::setHeight(int height)
 //overloaded operators
 Image& Image::operator+(Image& other)
 {
-    // std::cout<<data.get()<<endl;
+    //std::cout<<"Data before plus"<<endl;
+    //std::cout<<data.get()<<endl;
     Image::iterator beg = this->begin(), end = this->end();
     Image::iterator inStart = other.begin(), inEnd = other.end();
     while (beg != end) {
@@ -134,11 +135,14 @@ Image& Image::operator+(Image& other)
         ++beg;
         ++inStart;
     }
-    std::cout << data.get() << endl;
+    //std::cout<<"Data after plus"<<endl;
+    //std::cout << data.get() << endl;
     return (*this);
 }
 Image& Image::operator-(Image& other)
 {
+    //std::cout<<"Data before minus"<<endl;
+    //std::cout<<data.get()<<endl;
     Image::iterator beg = this->begin(), end = this->end();
     Image::iterator inStart = other.begin(), inEnd = other.end();
     while (beg != end) {
@@ -146,6 +150,8 @@ Image& Image::operator-(Image& other)
         ++beg;
         ++inStart;
     }
+    //std::cout<<"Data after minus"<<endl;
+    //std::cout << data.get() << endl;
     return (*this);
 }
 Image& Image::operator!()
@@ -166,10 +172,7 @@ Image& Image::operator/(Image& other)
     Image::iterator beg = this->begin(), end = this->end();
     Image::iterator inStart = other.begin(), inEnd = other.end();
     while (beg != end) {
-        if (*beg == 255) {
-            *beg = *inStart;
-        }
-        else {
+        if (*inStart != 255) {
             *beg = 0;
         }
         ++beg;

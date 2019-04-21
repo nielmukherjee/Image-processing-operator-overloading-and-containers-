@@ -50,27 +50,27 @@ int main(int argc,char* argv[]){
         ANGDAN002::Image image1 =  image.load(l1);
         ANGDAN002::Image image2 =  image.load(l2);
         cout<<"start maskin operations"<<endl;
-        image1/image2;
+        ANGDAN002::Image result = image1/image2;
         cout<<"Done masking"<<endl;
-        image1.save(output);
+        result.save(output);
     }
     if(operation=="-a"){
         ANGDAN002::Image image(0,0,std::move(nullptr));
-        ANGDAN002::Image image1 =  image.load(l1);
         ANGDAN002::Image image2 =  image.load(l2);
+        ANGDAN002::Image image1 =  image.load(l1);
         cout<<"start adding operations"<<endl;
-        image1+image2;
+        ANGDAN002::Image result = image1+image2;
         cout<<"Done adding"<<endl;
-        image1.save(output);
+        result.save(output);
     }
     if(operation=="-s"){
         ANGDAN002::Image image(0,0,std::move(nullptr));
         ANGDAN002::Image image1 =  image.load(l1);
         ANGDAN002::Image image2 =  image.load(l2);
         cout<<"start sub operations"<<endl;
-        image1-image2;
+        ANGDAN002::Image result = image1-image2;
         cout<<"Done subtracting"<<endl;
-        image1.save(output);
+        result.save(output);
     }
     
     if(operation=="-t"){   
