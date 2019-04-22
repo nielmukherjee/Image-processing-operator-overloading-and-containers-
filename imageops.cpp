@@ -132,6 +132,11 @@ Image& Image::operator+(Image& other)
     //std::cout<<data.get()<<endl;
     Image::iterator beg = this->begin(), end = this->end();
     Image::iterator inStart = other.begin(), inEnd = other.end();
+    if((this->width*this->height)!=(other.width*other.height)){
+        cout<<"!!!!!!!!!!!!!Images are not of the same size!!!!!!!!!!"<<endl;
+        cout<<"Exiting from the program"<<endl;
+        exit(0);
+    }
     while (beg != end) {
         if((*inStart + *beg) > 255){*beg=255;}
         else{*beg = *inStart + *beg;}
@@ -149,6 +154,11 @@ Image& Image::operator-(Image& other)
     //std::cout<<data.get()<<endl;
     Image::iterator beg = this->begin(), end = this->end();
     Image::iterator inStart = other.begin(), inEnd = other.end();
+    if((this->width*this->height)!=(other.width*other.height)){
+        cout<<"!!!!!!!!!!!!!Images are not of the same size!!!!!!!!!!"<<endl;
+        cout<<"Exiting from the program"<<endl;
+        exit(0);
+    }
     while (beg != end) {
        if((*beg - *inStart) < 0){*beg=0;}
        else{*beg = *beg - *inStart;}
@@ -176,6 +186,11 @@ Image& Image::operator/(Image& other)
 {
     Image::iterator beg = this->begin(), end = this->end();
     Image::iterator inStart = other.begin(), inEnd = other.end();
+    if((this->width*this->height)!=(other.width*other.height)){
+        cout<<"!!!!!!!!!!!!!Images are not of the same size!!!!!!!!!!"<<endl;
+        cout<<"Exiting from the program"<<endl;
+        exit(0);
+    }
     while (beg != end) {
         if (*inStart != 255) {
             *beg = 0;
