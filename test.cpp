@@ -57,7 +57,52 @@ TEST_CASE("MOVE & COPY SEMANTICS","[MOVE COPY]")
 /**
  * Iterator and its operators (including boundary conditions)
  **/
+TEST_CASE("ITERATOR AND ITS OPERATORS","[ITERATOR OPERATORS")
+{
+    unsigned char* buffer1 = new unsigned char[25]{
+    255,2,3,12,2,255,2,3,12,2,
+    255,2,3,12,2,255,2,3,12,2,255,2,3,12,2};
+    unsigned char* buffer2= new unsigned char[25]{
+    3,5,255,1,2,3,5,255,1,2,
+    3,5,255,1,2,3,5,255,1,2,3,5,255,1,2};
 
+    Image image1(5,5,nullptr);
+    Image image2(5,5,nullptr);
+    image1.getData().reset(buffer1);
+    image2.getData().reset(buffer2);
+    SECTION("* OPERATOR","[* OPERATOR]"){
+        Image::iterator beg = image2.begin(), end = image2.end();
+        Image::iterator inStart = image1.begin(), inEnd = image1.end();
+        REQUIRE(*(beg)==3);
+        REQUIRE(*(inStart)==255); 
+        REQUIRE(*(end)!=2);
+        REQUIRE(*(inEnd)!=2); 
+    }
+    SECTION("++ OPERATOR","[++ OPERATOR]"){
+        Image::iterator beg = image2.begin(), end = image2.end();
+        REQUIRE(*(beg)==3); ++beg;
+        REQUIRE(*(beg)==5); ++beg;
+        REQUIRE(*(beg)==255); ++beg;
+        REQUIRE(*(beg)==1); ++beg;
+        REQUIRE(*(beg)==2);
+    }
+    SECTION("-- OPERATOR","[-- OPERATOR]"){
+        Image::iterator beg = image2.begin(), end = image2.end();
+        --end;
+        REQUIRE(*(end)==2); --end;
+        REQUIRE(*(end)==1); --end;
+        REQUIRE(*(end)==255);--end;
+        REQUIRE(*(end)==5); --end;
+        REQUIRE(*(end)==3);
+    }
+    SECTION("= OPERATOR","[= OPERATOR]"){
+        Image::iterator beg = image1.begin(), end = image1.end();
+        Image::iterator inStart = image2.begin(), inEnd = image2.end();
+        *beg = *inStart;
+        REQUIRE(*(beg)==3);
+        REQUIRE(*(inStart)==3);
+    }
+}
 /**
  * Testing Thresholding, inverting and masking operator overloads
  **/
