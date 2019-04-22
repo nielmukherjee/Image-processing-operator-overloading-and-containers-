@@ -1,12 +1,66 @@
+/**
+* Copyright (C) Dancan Matara Angwenyi
+* Email: dancangwe@gmail.com
+* Author : Dancan Angwenyi
+* Date : 22nd April 2019
+* Computer Science
+* C++ Image processing (Using containers and operators)
+*/
 #define CATCH_CONFIG_MAIN
-
 #include "catch.hpp"
 #include "imageops.h"
 namespace ANGDAN002{
+/**
+ * Move and copy semantics
+ */
+TEST_CASE("MOVE & COPY SEMANTICS","[MOVE COPY]")
+{
+    unsigned char* buffer1 = new unsigned char[25]{
+    255,2,3,12,2,255,2,3,12,2,
+    255,2,3,12,2,255,2,3,12,2,255,2,3,12,2};
+    int f = 128;
+    Image image1(5,5,nullptr);
+    Image image2(0,0,nullptr);
+    image1.getData().reset(buffer1);
+    SECTION("PRE CONDITION image1","[ReturnValue]"){
+        REQUIRE(image1.getData()[0]==255);
+        REQUIRE(image1.getData()[1]==2);
+        REQUIRE(image1.getData()[2]==3);
+        REQUIRE(image1.getData()[3]==12);
+        REQUIRE(image1.getData()[4]==2);
+    }
+    SECTION("COPY SEMANTICS","[image1=image2]"){
+        image2 = image1;
+        REQUIRE(image1.getData()!=nullptr);
+        REQUIRE(image2.getWidth()== image1.getWidth());
+        REQUIRE(image2.getHeight()== image1.getHeight());
+        REQUIRE(image2.getData()[0]==255);
+        REQUIRE(image2.getData()[6]==2);
+        REQUIRE(image2.getData()[22]==3);
+        REQUIRE(image2.getData()[24]==2);
+        REQUIRE(image2.getData()[10]==255);
+
+    }
+     SECTION("MOVE SEMANTICS","[image1=std::move(image2)]"){
+        image2 = std::move(image1);
+        REQUIRE(image1.getData()==nullptr);
+        REQUIRE(image2.getWidth() != image1.getWidth());
+        REQUIRE(image2.getHeight() != image1.getHeight());
+        REQUIRE(image2.getData()[0]==255);
+        REQUIRE(image2.getData()[6]==2);
+        REQUIRE(image2.getData()[22]==3);
+        REQUIRE(image2.getData()[24]==2);
+        REQUIRE(image2.getData()[10]==255);
+
+    }
+}
+/**
+ * Iterator and its operators (including boundary conditions)
+ **/
 
 /**
  * Testing Thresholding, inverting and masking operator overloads
- * */
+ **/
 TEST_CASE("THRESHOLDING","[THRESHOLDING]")
 {
     unsigned char* buffer1 = new unsigned char[25]{

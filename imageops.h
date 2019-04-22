@@ -1,4 +1,6 @@
-/*
+/**
+* Copyright (C) Dancan Matara Angwenyi
+* Email: dancangwe@gmail.com
 * Author : Dancan Angwenyi
 * Date : 8th April 2019
 * Computer Science
