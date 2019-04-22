@@ -22,11 +22,10 @@ Image::Image()
 Image::~Image()
 {
     cout << "destructor invoked" << endl;
-    // this->width = 0;
-    // this->height = 0;
-    // cout<<"destructor done 1"<<endl;
-    // this->data = nullptr;
-    // cout<<"destructor done 2"<<endl;
+    this->width = 0;
+    this->height = 0;
+    this->data = nullptr;
+    cout<<"destructor done"<<endl;
 }
 //parametrized constructor
 Image::Image(int width, int height, unique_ptr<unsigned char[]> data_in)
@@ -82,7 +81,7 @@ Image& Image::operator=(Image& other)
             ++beg;
             ++inStart;
         }
-        cout << "copy assignment done" << endl;
+        cout << "copy assignment operator done" << endl;
     }
     return *this;
 }
@@ -90,7 +89,7 @@ Image& Image::operator=(Image& other)
 Image& Image::operator=(Image&& other)
 {
     if (this != &other) {
-        cout << "move constructor called" << endl;
+        cout << "move assignment operator called" << endl;
         //delete [] data.get();
         this->width = other.width;
         this->height = other.height;
@@ -99,7 +98,7 @@ Image& Image::operator=(Image&& other)
         other.width = 0;
         other.height = 0;
         other.data.reset(nullptr);
-        cout << "move constructor done" << endl;
+        cout << "move assignment operator done" << endl;
     }
     return *this;
 }

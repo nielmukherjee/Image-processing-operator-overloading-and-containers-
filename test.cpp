@@ -29,7 +29,31 @@ TEST_CASE("MOVE & COPY SEMANTICS","[MOVE COPY]")
         REQUIRE(image1.getData()[3]==12);
         REQUIRE(image1.getData()[4]==2);
     }
-    SECTION("COPY SEMANTICS","[image1=image2]"){
+    SECTION("COPY CONSTRUCTOR","[Image image3 = image1]"){
+        Image image3 = image1;
+        REQUIRE(image1.getData()!=nullptr);
+        REQUIRE(image3.getWidth()== image1.getWidth());
+        REQUIRE(image3.getHeight()== image1.getHeight());
+        REQUIRE(image3.getData()[0]==255);
+        REQUIRE(image3.getData()[6]==2);
+        REQUIRE(image3.getData()[22]==3);
+        REQUIRE(image3.getData()[24]==2);
+        REQUIRE(image3.getData()[10]==255);
+
+    }
+    SECTION("MOVE CONSTRUCTOR","[Image image3 = std::move(image1)]"){
+        Image image3 = std::move(image1);
+        REQUIRE(image1.getData()==nullptr);
+        REQUIRE(image3.getWidth() != image1.getWidth());
+        REQUIRE(image3.getHeight() != image1.getHeight());
+        REQUIRE(image3.getData()[0]==255);
+        REQUIRE(image3.getData()[6]==2);
+        REQUIRE(image3.getData()[22]==3);
+        REQUIRE(image3.getData()[24]==2);
+        REQUIRE(image3.getData()[10]==255);
+
+    }
+    SECTION("COPY ASSIGNMENT","[image2 = image1]"){
         image2 = image1;
         REQUIRE(image1.getData()!=nullptr);
         REQUIRE(image2.getWidth()== image1.getWidth());
@@ -41,7 +65,7 @@ TEST_CASE("MOVE & COPY SEMANTICS","[MOVE COPY]")
         REQUIRE(image2.getData()[10]==255);
 
     }
-     SECTION("MOVE SEMANTICS","[image1=std::move(image2)]"){
+     SECTION("MOVE ASSIGNMENT","[image2 = std::move(image1)]"){
         image2 = std::move(image1);
         REQUIRE(image1.getData()==nullptr);
         REQUIRE(image2.getWidth() != image1.getWidth());

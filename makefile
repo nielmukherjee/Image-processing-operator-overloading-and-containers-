@@ -1,8 +1,13 @@
-#
+# 
+# Copyright (C) Dancan Matara Angwenyi
+# Email: dancangwe@gmail.com
 # Author : Dancan Angwenyi
 # Date : 8th April 2019
 # Computer Science
 # C++ Image processing (Using containers and operators)
+# 
+# target: dependencies
+#	  action
 #
 CC=g++
 CCFLAGS=-std=c++11
@@ -28,3 +33,5 @@ clean:
 		@rm -f *.o
 		@rm -f imageops
 		@rm -f test
+install:	
+		@mv imageops ~/bin
