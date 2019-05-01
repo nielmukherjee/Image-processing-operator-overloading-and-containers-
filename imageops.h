@@ -17,7 +17,7 @@
 #include <vector>
 #include <algorithm>
 #include <memory>
-
+#include "Filter.h"
 namespace ANGDAN002 {
 class Image {
 private:
@@ -45,6 +45,8 @@ public:
     Image& operator!();
     Image& operator/(Image& L1);
     Image& operator*(int i);
+    Image& operator%(Filter & g);
+    int reflect(int M, int x);
     friend void operator >>(std::ifstream& stream, Image& other);
     friend void operator <<(std::ofstream& stream, Image& other);
     //other methods
@@ -56,21 +58,18 @@ public:
     //start class iterator and make image the friend
     class iterator {
     private:
+        friend class Image;
         unsigned char* ptr;
         // construct only via Image class (begin/end)
-       
-        iterator(u_char* p)
-            : ptr(p)
-        {
-        }
-
+        iterator(u_char* p): ptr(p){}
     public: 
-         friend class Image;
+         
         //copy construct is public friend class Image;
         iterator(const iterator& rhs)
             : ptr(rhs.ptr)
-        {
-        }
+        {}
+        //destructor
+        ~iterator() {this->ptr = nullptr;}
         // define overloaded ops: *, ++, --, =
         iterator& operator=(const iterator& rhs)
         {

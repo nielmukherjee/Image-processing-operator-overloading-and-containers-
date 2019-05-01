@@ -83,5 +83,14 @@ int main(int argc,char* argv[]){
         cout<<"threshold operation Done"<<endl;
         image1.save(output); 
     }
+    if(operation=="-f"){   
+        ANGDAN002::Image image(0,0,std::move(nullptr));
+        ANGDAN002::Image image1 =  image.load(l1);
+        cout<<"start filtering operations"<<endl;
+        ANGDAN002::Filter filter(l2);
+        ANGDAN002::Image result = image1%filter;
+        cout<<"threshold operation Done"<<endl;
+        result.save(output); 
+    }
     return 0;
 }

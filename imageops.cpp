@@ -13,8 +13,8 @@ namespace ANGDAN002 {
 
 //default constructor
 Image::Image()
-    : width(width)
-    , height(height)
+    : width(width = 0)
+    , height(height = 0)
     , data(nullptr)
 {
 }
@@ -24,8 +24,10 @@ Image::~Image()
     cout << "destructor invoked" << endl;
     this->width = 0;
     this->height = 0;
-    this->data = nullptr;
-    cout<<"destructor done"<<endl;
+    if(data){
+         this->data = nullptr;
+    }
+    cout << "destructor done" << endl;
 }
 //parametrized constructor
 Image::Image(int width, int height, unique_ptr<unsigned char[]> data_in)
@@ -36,10 +38,10 @@ Image::Image(int width, int height, unique_ptr<unsigned char[]> data_in)
 }
 //copy constructor
 Image::Image(Image& other)
+    : width(other.width)
+    , height(other.height)
 {
     cout << "copy constructor called" << endl;
-    this->width = other.width;
-    this->height = other.height;
     this->data.reset(new unsigned char[width * height]);
     Image::iterator beg = this->begin(), end = this->end();
     Image::iterator inStart = other.begin(), inEnd = other.end();
@@ -54,10 +56,9 @@ Image::Image(Image& other)
 Image::Image(Image&& other)
     : width(other.width)
     , height(other.height)
+    , data(move(other.data))
 {
     cout << "move constructor called" << endl;
-    this->data.reset(new unsigned char[width * height]);
-    this->data = move(other.data);
 
     other.width = 0;
     other.height = 0;
@@ -69,7 +70,6 @@ Image::Image(Image&& other)
 Image& Image::operator=(Image& other)
 {
     if (this != &other) {
-        //delete [] data.get();
         cout << "copy assignment operator invoked" << endl;
         this->width = other.width;
         this->height = other.height;
@@ -127,67 +127,65 @@ void Image::setHeight(int height)
 //overloaded operators
 Image& Image::operator+(Image& other)
 {
-    //std::cout<<"Data before plus"<<endl;
-    //std::cout<<data.get()<<endl;
     Image::iterator beg = this->begin(), end = this->end();
     Image::iterator inStart = other.begin(), inEnd = other.end();
-    if((this->width*this->height)!=(other.width*other.height)){
-        cout<<"!!!!!!!!!!!!!Images are not of the same size!!!!!!!!!!"<<endl;
-        cout<<"Exiting from the program"<<endl;
+    if ((this->width * this->height) != (other.width * other.height)) {
+        cout << "!!!!!!!!!!!!!Images are not of the same size!!!!!!!!!!" << endl;
+        cout << "Exiting from the program" << endl;
         exit(0);
     }
     while (beg != end) {
-        if((*inStart + *beg) > 255){*beg=255;}
-        else{*beg = *inStart + *beg;}
-        if(*beg > 255){*beg=255;}
+        if ((*inStart + *beg) > 255) {
+            *beg = 255;
+        }
+        else {
+            *beg = *inStart + *beg;
+        }
+        if (*beg > 255) {
+            *beg = 255;
+        }
         ++beg;
         ++inStart;
     }
-    //std::cout<<"Data after plus"<<endl;
-    //std::cout << data.get() << endl;
     return (*this);
 }
 Image& Image::operator-(Image& other)
 {
-    //std::cout<<"Data before minus"<<endl;
-    //std::cout<<data.get()<<endl;
     Image::iterator beg = this->begin(), end = this->end();
     Image::iterator inStart = other.begin(), inEnd = other.end();
-    if((this->width*this->height)!=(other.width*other.height)){
-        cout<<"!!!!!!!!!!!!!Images are not of the same size!!!!!!!!!!"<<endl;
-        cout<<"Exiting from the program"<<endl;
+    if ((this->width * this->height) != (other.width * other.height)) {
+        cout << "!!!!!!!!!!!!!Images are not of the same size!!!!!!!!!!" << endl;
+        cout << "Exiting from the program" << endl;
         exit(0);
     }
     while (beg != end) {
-       if((*beg - *inStart) < 0){*beg=0;}
-       else{*beg = *beg - *inStart;}
+        if ((*beg - *inStart) < 0) {
+            *beg = 0;
+        }
+        else {
+            *beg = *beg - *inStart;
+        }
         ++beg;
         ++inStart;
     }
-    //std::cout<<"Data after minus"<<endl;
-    //std::cout << data.get() << endl;
     return (*this);
 }
 Image& Image::operator!()
 {
-    //std::cout<<data.get()<<endl;
     Image::iterator beg = this->begin(), end = this->end();
     while (beg != end) {
         *beg = 255 - *beg;
         ++beg;
     }
     return (*this);
-    //std::cout<<endl<<endl<<endl<<endl<<endl;
-    //std::cout<<"Data after noting"<<endl;
-    //std::cout<<data.get()<<endl;
 }
 Image& Image::operator/(Image& other)
 {
     Image::iterator beg = this->begin(), end = this->end();
     Image::iterator inStart = other.begin(), inEnd = other.end();
-    if((this->width*this->height)!=(other.width*other.height)){
-        cout<<"!!!!!!!!!!!!!Images are not of the same size!!!!!!!!!!"<<endl;
-        cout<<"Exiting from the program"<<endl;
+    if ((this->width * this->height) != (other.width * other.height)) {
+        cout << "!!!!!!!!!!!!!Images are not of the same size!!!!!!!!!!" << endl;
+        cout << "Exiting from the program" << endl;
         exit(0);
     }
     while (beg != end) {
@@ -213,8 +211,66 @@ Image& Image::operator*(int f)
     }
     return (*this);
 }
+Image& Image::operator%(Filter & g){
+    Image::iterator beg = this->begin(), end = this->end();
+    Image::iterator inStart = this->begin(), inEnd = this->end();
+    float unfiltered[height][width];
+    for(int i = 0; i<height ;++i){
+        for (int j=0; j<width ;++j){
+            while(beg!=end){
+                float pixel = float(*beg);
+                unfiltered[i][j]= pixel;
+                ++beg;
+            }
+        }
+    }
+    for(int i = 0; i<height ;++i){
+        for (int j=0; j<width ;++j){
+            int median = g.N / 2;
+            int x_val = 0;
+            int y_val = 0;
+            float fir[g.N][g.N];
+            for (int x = i + median ; x >= i - median ; x--) {
+                for (int y = j - median ; y <= j + median ; y++) {
+                    int val1 = reflect(height, x);
+                    int val2 = reflect(width, y);
+                    fir[x_val][y_val] = unfiltered[val1][val2];
+                    y_val += 1;
+                }
+               x_val += 1;
+            }
+            float sum = 0.0;
+            for (int n = 0; n < g.N; n++) {
+                for (int c = 0; c < g.N; c++) { 
+                    sum += fir[n][c] * g.fir[n][c];
+                }
+            }
+            if (sum > 255) {
+                *beg = 255;
+            }else {
+                *beg = sum;
+            }
+            ++beg;
+        }
+    }
+    return *this;
+}
+
+int Image::reflect(int measure, int value)
+{
+    int result = value;
+    if (value < 0) {
+         result= (value*-1) - 1;
+        return result;
+    }
+    if (value >= measure) {
+        result = (2 * measure) - (value)-1;
+        return result;
+    }
+    return result;
+}
 /*
-* #Data Format of the file
+* Data Format of the file
 * 
 * P5
 * #Comments if any
@@ -248,26 +304,19 @@ void operator>>(ifstream& stream, Image& other)
                 }
 
                 cout << "Start reading file data: " << endl;
-                //cout << "File size is: " << size << endl;
                 unique_ptr<unsigned char[]> buffer(new unsigned char[size]);
                 stream.read((char*)buffer.get(), size);
                 cout << "Successfully read " << endl;
                 Image imagee(width, height, move(buffer));
-                //cout << "imagee data :" << endl;
-                //std::cout << imagee.data.get() << endl;
-                //cout<<"Successfully created an instance of class image"<<endl;
                 stream.close();
                 other = imagee; //invokes copy assignment
-                //std::cout<<"other copied data :"<<endl;
-                //std::cout<<other.data.get()<<endl;
                 cout << "input stream Successfully done" << endl;
-                // }
             }
         }
     }
 }
 /*
-* #Data Format for writing to the file
+* Data Format for writing to the file
 * 
 * P5
 * #Comments if any
@@ -279,12 +328,7 @@ void operator<<(ofstream& stream, Image& other)
 {
     cout << "start writing to out file" << endl;
     cout << "width: " << other.width << " height: " << other.height << endl;
-    //cout<<"P5"<<endl<<"255"<<endl;
-    //std::cout<<"other copied data :"<<endl;
-    //std::cout<<other.data.get()<<endl;
     int size = other.width * other.height;
-    //std::cout<<"other data :"<<endl;
-    // std::cout<<other.data.get()<<endl;
     cout << "File size: " << size << endl;
     stream << "P5" << endl;
     stream << "#Dancan" << endl;
@@ -294,7 +338,6 @@ void operator<<(ofstream& stream, Image& other)
     stream.close();
     cout << "out file closed" << endl;
 }
-//
 void Image::copy(const Image& other)
 {
     Image::iterator beg = this->begin(), end = this->end();
@@ -306,27 +349,21 @@ void Image::copy(const Image& other)
     }
 }
 
-//load and save images
+//load images
 Image Image::load(std::string inputFileName)
 {
     ifstream file_stream(inputFileName, ios::in | ios::binary);
     Image imageFile(0, 0, std::move(nullptr));
     file_stream >> imageFile;
     cout << "image loaded successfully" << endl;
-    //cout<<"image data :"<<endl;
-    //std::cout<<imageFile.data.get()<<endl;
     return imageFile;
 }
+// Save images
 void Image::save(std::string outputFileName)
 {
 
-    //std::cout<<"Data to be saved :"<<endl;
-    //std::cout<<data.get()<<endl;
     ofstream outstream(outputFileName, ios::out | ios::binary | ios::app);
     outstream << (*this);
-    //Image imageFile(width,height,move(data));
-    // outstream<<imageFile;
-    //std::cout<<imageFile.data.get()<<endl;
     cout << "image saved successfully" << endl;
 }
 }
